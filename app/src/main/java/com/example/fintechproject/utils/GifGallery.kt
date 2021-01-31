@@ -30,14 +30,15 @@ class GifGallery(private var loader: IGifGalleryAPI) : IGifGallery {
     override suspend fun getCurrentPost(): Result<Post> {
 
         val categoryData = categories.getValue(current)
+        val currentCategory = categoryData.category
 
         return if (categoryData.loadedPosts.size != 0) {
             try {
 //                Result.Success(categoryData.loadedPosts[categoryData.currentPostIndex])
-                Result.Success(categories[current]!!.loadedPosts[categories[current]!!.currentPostIndex])
+                Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.currentPostIndex])
             } catch (e: java.lang.IndexOutOfBoundsException) {
 //                Result.Success(categoryData.loadedPosts[categoryData.loadedPosts.size - 1])
-                Result.Success(categories[current]!!.loadedPosts[categories[current]!!.loadedPosts.size - 1])
+                Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.loadedPosts.size - 1])
             }
         }
         else
@@ -54,15 +55,16 @@ class GifGallery(private var loader: IGifGalleryAPI) : IGifGallery {
             return Result.Error(Exception("No previous post"))
 
         val categoryData = categories.getValue(current)
+        val currentCategory = categoryData.category
         categoryData.currentPostIndex--
-        categories[current] = categoryData
+        categories[currentCategory] = categoryData
 
         try {
 //            return Result.Success(categoryData.loadedPosts[categoryData.currentPostIndex])
-            return Result.Success(categories[current]!!.loadedPosts[categories[current]!!.currentPostIndex])
+            return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.currentPostIndex])
         } catch (e: java.lang.IndexOutOfBoundsException) {
 //            return Result.Success(categoryData.loadedPosts[categoryData.loadedPosts.size - 1])
-            return Result.Success(categories[current]!!.loadedPosts[categories[current]!!.loadedPosts.size - 1])
+            return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.loadedPosts.size - 1])
         }
 
     }
@@ -78,39 +80,40 @@ class GifGallery(private var loader: IGifGalleryAPI) : IGifGallery {
 
         val categoryData = categories.getValue(current)
         categoryData.currentPostIndex++
+        val currentCategory = categoryData.category
 
         if (categoryData.currentPostIndex == categoryData.loadedPosts.size || categoryData.lastPage == -1) {
 
-            val result = loader.getPage(current, categoryData.lastPage + 1)
+            val result = loader.getPage(currentCategory, categoryData.lastPage + 1)
 
             when(result) {
                 is Result.Success<List<Post>> -> {
                     val newPosts = result.data
                     categoryData.loadedPosts.addAll(newPosts)
                     categoryData.lastPage++
-                    categories[current] = categoryData
+                    categories[currentCategory] = categoryData
                     Log.d("fintech", "New posts: $newPosts")
                 }
                 is Result.Error -> {
                     if (result.exception is ContentException)
                         categoryData.endOfList = true
                     categoryData.currentPostIndex--
-                    categories[current] = categoryData
+                    categories[currentCategory] = categoryData
                     return result
                 }
             }
         }
 
-        categories[current] = categoryData
+        categories[currentCategory] = categoryData
 
         if (categoryData.loadedPosts.size == 0)
             return Result.Error(ContentException())
         try {
 //            return Result.Success(categoryData.loadedPosts[categoryData.currentPostIndex])
-            return Result.Success(categories[current]!!.loadedPosts[categories[current]!!.currentPostIndex])
+            return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.currentPostIndex])
         } catch (e: IndexOutOfBoundsException){
 //            return Result.Success(categoryData.loadedPosts[categoryData.loadedPosts.size - 1])
-            return Result.Success(categories[current]!!.loadedPosts[categories[current]!!.loadedPosts.size - 1])
+            return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.loadedPosts.size - 1])
         }
     }
 }
