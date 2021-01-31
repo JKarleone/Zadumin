@@ -6,8 +6,9 @@ import com.example.fintechproject.models.Result
 interface IGifGallery {
 
     fun changeCategory(toCategory: String)
+    fun isLoadedPostsEmpty(category: String): Boolean
 
-    suspend fun getCurrentPost(): Result<Post>
+    fun getCurrentPost(): Result<Post>
 
     fun canMoveToPreviousPost(): Boolean
     fun moveToPreviousPost(): Result<Post>

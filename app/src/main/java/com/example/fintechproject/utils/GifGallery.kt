@@ -23,26 +23,26 @@ class GifGallery(private var loader: IGifGalleryAPI) : IGifGallery {
     )
     private var current: String = "latest"
 
+    override fun isLoadedPostsEmpty(category: String): Boolean {
+        return categories[category]!!.loadedPosts.isEmpty()
+    }
+
     override fun changeCategory(toCategory: String) {
         current = toCategory
     }
 
-    override suspend fun getCurrentPost(): Result<Post> {
+    override fun getCurrentPost(): Result<Post> {
 
         val categoryData = categories.getValue(current)
         val currentCategory = categoryData.category
 
-        return if (categoryData.loadedPosts.size != 0) {
-            try {
-//                Result.Success(categoryData.loadedPosts[categoryData.currentPostIndex])
-                Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.currentPostIndex])
-            } catch (e: java.lang.IndexOutOfBoundsException) {
-//                Result.Success(categoryData.loadedPosts[categoryData.loadedPosts.size - 1])
-                Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.loadedPosts.size - 1])
-            }
-        }
-        else
-            moveToNextPost()
+        if (categories[currentCategory]!!.endOfList)
+            return Result.Error(ContentException())
+
+        if (categories[currentCategory]!!.currentPostIndex >= categories[currentCategory]!!.loadedPosts.size)
+            return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.loadedPosts.size - 1])
+
+        return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.currentPostIndex])
     }
 
     override fun canMoveToPreviousPost(): Boolean {
@@ -60,10 +60,8 @@ class GifGallery(private var loader: IGifGalleryAPI) : IGifGallery {
         categories[currentCategory] = categoryData
 
         try {
-//            return Result.Success(categoryData.loadedPosts[categoryData.currentPostIndex])
             return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.currentPostIndex])
         } catch (e: java.lang.IndexOutOfBoundsException) {
-//            return Result.Success(categoryData.loadedPosts[categoryData.loadedPosts.size - 1])
             return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.loadedPosts.size - 1])
         }
 
@@ -108,11 +106,10 @@ class GifGallery(private var loader: IGifGalleryAPI) : IGifGallery {
 
         if (categoryData.loadedPosts.size == 0)
             return Result.Error(ContentException())
+
         try {
-//            return Result.Success(categoryData.loadedPosts[categoryData.currentPostIndex])
             return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.currentPostIndex])
         } catch (e: IndexOutOfBoundsException){
-//            return Result.Success(categoryData.loadedPosts[categoryData.loadedPosts.size - 1])
             return Result.Success(categories[currentCategory]!!.loadedPosts[categories[currentCategory]!!.loadedPosts.size - 1])
         }
     }

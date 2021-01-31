@@ -27,7 +27,10 @@ class GalleryViewModel(private var gallery: IGifGallery) : ViewModel() {
     var categoryIndex: Int by Delegates.observable(0) { _, _, newValue ->
         gallery.changeCategory(categories[newValue])
         error = null
-        getCurrent()
+        if (gallery.isLoadedPostsEmpty(categories[newValue]))
+            moveNext()
+        else
+            getCurrent()
     }
 
     init {
@@ -69,11 +72,9 @@ class GalleryViewModel(private var gallery: IGifGallery) : ViewModel() {
     }
 
     fun getCurrent() {
-        viewModelScope.launch {
-            val post = gallery.getCurrentPost()
+        val post = gallery.getCurrentPost()
 
-            handleResults(post)
-        }
+        handleResults(post)
     }
 
     private fun handleResults(post: Result<Post>){
