@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Fintech Project</string>
+    <string name="gifDescription">gif</string>
+    <string name="next">Следующий</string>
+    <string name="previous">Предыдущий</string>
+    <string name="AppBarTitle">Developers Life</string>
+    <string name="internetErrorMessage">Произошла ошибка при загрузке данных.\nПроверьте подключение к сети.</string>
+    <string name="contentErrorMessage">Похоже закончился контент...</string>
+    <string name="repeatConnectionButton">Повторить</string>
+    <string name="gif_error_text">Ошибка загрузки.</string>
+</resources>
