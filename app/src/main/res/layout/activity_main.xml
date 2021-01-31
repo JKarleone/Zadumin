@@ -24,7 +24,7 @@
 
         <RadioButton
             android:id="@+id/latestButton"
-            android:text="Последние"
+            android:text="@string/latest"
             android:textColor="@color/radio_button_textcolor_selector"
             android:textAlignment="center"
             android:checked="true"
@@ -37,7 +37,7 @@
 
         <RadioButton
             android:id="@+id/topButton"
-            android:text="Лучшие"
+            android:text="@string/top"
             android:textAlignment="center"
             android:textColor="@color/radio_button_textcolor_selector"
             android:button="@android:color/transparent"
@@ -49,7 +49,7 @@
 
         <RadioButton
             android:id="@+id/hotButton"
-            android:text="Горячие"
+            android:text="@string/hot"
             android:textAlignment="center"
             android:textColor="@color/radio_button_textcolor_selector"
             android:button="@android:color/transparent"
@@ -78,65 +78,15 @@
                 android:id="@+id/gifErrorInclude"
                 layout="@layout/frame_gif_error"/>
 
-            <FrameLayout
-                android:id="@+id/gifLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/gifImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxHeight="400dp"/>
-
-                <TextView
-                    android:id="@+id/gifDescription"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gif_description_background"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="15dp"/>
-
-            </FrameLayout>
+            <include
+                android:id="@+id/gifInclude"
+                layout="@layout/frame_gif"/>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <LinearLayout
-            android:id="@+id/errorLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            android:gravity="center"
-            android:padding="20dp">
-
-            <ImageView
-                android:id="@+id/errorImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_no_internet_connection"/>
-
-            <TextView
-                android:id="@+id/errorMessage"
-                android:text="@string/internetErrorMessage"
-                android:textAlignment="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/repeatConnectionButton"
-                android:text="@string/repeatConnectionButton"
-                android:textColor="@color/app_blue_color"
-                android:background="@android:color/transparent"
-                android:onClick="onRepeatConnectionButtonClickHandler"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
+        <include
+            android:id="@+id/errorInclude"
+            layout="@layout/frame_error"/>
 
         <FrameLayout
             android:id="@+id/progressLayout"

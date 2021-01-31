@@ -8,4 +8,7 @@
     <string name="contentErrorMessage">Похоже закончился контент...</string>
     <string name="repeatConnectionButton">Повторить</string>
     <string name="gif_error_text">Ошибка загрузки.</string>
+    <string name="latest">Последние</string>
+    <string name="top">Лучшие</string>
+    <string name="hot">Горячие</string>
 </resources>

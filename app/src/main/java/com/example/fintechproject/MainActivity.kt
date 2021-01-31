@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         galleryViewModel.description.observe(this) {
             if (it != null)
-                binding.gifDescription.text = it
+                binding.gifInclude.gifDescription.text = it
         }
 
         galleryViewModel.canMoveNext.observe(this) {
@@ -83,13 +83,13 @@ class MainActivity : AppCompatActivity() {
                     delay(300)
                     turnOffProgressBar()
 
-                    FadeAnimator.fadeIn(binding.errorLayout)
+                    FadeAnimator.fadeIn(binding.errorInclude.errorLayout)
                 }
                 if (galleryViewModel.error is ContentException) {
                     coroutineScope.launch {
                         delay(300)
-                        binding.repeatConnectionButton.visibility = View.INVISIBLE
-                        binding.errorMessage.text = getString(R.string.contentErrorMessage)
+                        binding.errorInclude.repeatConnectionButton.visibility = View.INVISIBLE
+                        binding.errorInclude.errorMessage.text = getString(R.string.contentErrorMessage)
                     }
                 }
                 binding.nextButton.visibility = View.INVISIBLE
@@ -103,11 +103,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun resetCardAndErrorLayout() {
         binding.cardLayout.visibility = View.VISIBLE
-        binding.errorLayout.visibility = View.INVISIBLE
+        binding.errorInclude.errorLayout.visibility = View.INVISIBLE
         binding.nextButton.visibility = View.VISIBLE
         binding.previousButton.visibility = View.VISIBLE
-        binding.repeatConnectionButton.visibility = View.VISIBLE
-        binding.errorMessage.text = getString(R.string.internetErrorMessage)
+        binding.errorInclude.repeatConnectionButton.visibility = View.VISIBLE
+        binding.errorInclude.errorMessage.text = getString(R.string.internetErrorMessage)
     }
 
     private fun setDrawablePlaceholder() {
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun tryToLoadGif(url: String) {
 
-        FadeAnimator.fadeIn(binding.gifLayout)
+        FadeAnimator.fadeIn(binding.gifInclude.gifLayout)
         FadeAnimator.fadeOut(binding.gifErrorInclude.gifErrorLayout)
 
         Glide.with(this)
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         coroutineScope.launch {
                             delay(500)
-                            FadeAnimator.fadeOut(binding.gifLayout)
+                            FadeAnimator.fadeOut(binding.gifInclude.gifLayout)
                             FadeAnimator.fadeIn(binding.gifErrorInclude.gifErrorLayout)
                         }
                         return false
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .into(binding.gifImage)
+                .into(binding.gifInclude.gifImage)
 
     }
 
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         if (previousCheckedButtonId != view.id)
             findViewById<RadioButton>(previousCheckedButtonId).isChecked = false
 
-        FadeAnimator.fadeOut(binding.errorLayout)
+        FadeAnimator.fadeOut(binding.errorInclude.errorLayout)
 
         when(view.id) {
             R.id.latestButton -> {
@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onRepeatConnectionButtonClickHandler(view: View) {
         turnOnProgressBar()
-        FadeAnimator.fadeOut(binding.errorLayout, 200)
+        FadeAnimator.fadeOut(binding.errorInclude.errorLayout, 200)
         galleryViewModel.moveNext()
     }
 
