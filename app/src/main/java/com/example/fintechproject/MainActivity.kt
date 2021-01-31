@@ -1,7 +1,5 @@
 package com.example.fintechproject
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +12,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.fintechproject.animations.FadeAnimator
 import com.example.fintechproject.databinding.ActivityMainBinding
 import com.example.fintechproject.models.viewmodels.GalleryViewModel
 import com.example.fintechproject.models.viewmodels.GalleryViewModelFactory
@@ -21,7 +20,6 @@ import com.example.fintechproject.network.GifGalleryAPI
 import com.example.fintechproject.utils.GifGallery
 import com.example.fintechproject.utils.exceptions.ContentException
 import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,14 +78,12 @@ class MainActivity : AppCompatActivity() {
 
         galleryViewModel.isError.observe(this) {
             if (it) {
-                //                makeViewInvisible(binding.cardLayout)
                 binding.cardLayout.visibility = View.INVISIBLE
                 coroutineScope.launch {
                     delay(300)
                     turnOffProgressBar()
 
-                    makeViewVisible(binding.errorLayout)
-//                binding.errorLayout.visibility = View.VISIBLE
+                    FadeAnimator.fadeIn(binding.errorLayout)
                 }
                 if (galleryViewModel.error is ContentException) {
                     coroutineScope.launch {
@@ -106,9 +102,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun resetCardAndErrorLayout() {
-//        makeViewVisible(binding.cardLayout)
         binding.cardLayout.visibility = View.VISIBLE
-//        makeViewInvisible(binding.errorLayout)
         binding.errorLayout.visibility = View.INVISIBLE
         binding.nextButton.visibility = View.VISIBLE
         binding.previousButton.visibility = View.VISIBLE
@@ -127,8 +121,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun tryToLoadGif(url: String) {
 
-        makeViewVisible(binding.gifLayout)
-        makeViewInvisible(binding.gifErrorInclude.gifErrorLayout)
+        FadeAnimator.fadeIn(binding.gifLayout)
+        FadeAnimator.fadeOut(binding.gifErrorInclude.gifErrorLayout)
 
         Glide.with(this)
                 .load(url)
@@ -138,8 +132,8 @@ class MainActivity : AppCompatActivity() {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         coroutineScope.launch {
                             delay(500)
-                            makeViewInvisible(binding.gifLayout)
-                            makeViewVisible(binding.gifErrorInclude.gifErrorLayout)
+                            FadeAnimator.fadeOut(binding.gifLayout)
+                            FadeAnimator.fadeIn(binding.gifErrorInclude.gifErrorLayout)
                         }
                         return false
                     }
@@ -168,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         if (previousCheckedButtonId != view.id)
             findViewById<RadioButton>(previousCheckedButtonId).isChecked = false
 
-        makeViewInvisible(binding.errorLayout)
+        FadeAnimator.fadeOut(binding.errorLayout)
 
         when(view.id) {
             R.id.latestButton -> {
@@ -188,7 +182,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onRepeatConnectionButtonClickHandler(view: View) {
         turnOnProgressBar()
-        makeViewInvisible(binding.errorLayout, 200)
+        FadeAnimator.fadeOut(binding.errorLayout, 200)
         galleryViewModel.moveNext()
     }
 
@@ -202,30 +196,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun turnOffProgressBar() {
         binding.progressLayout.visibility = View.INVISIBLE
-    }
-
-    private fun makeViewInvisible(view: View, duration: Long = 400) {
-        view.animate()
-                .alpha(0.0f)
-                .setDuration(duration)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                        view.visibility = View.INVISIBLE
-                    }
-                })
-    }
-
-    private fun makeViewVisible(view: View, duration: Long = 300) {
-        view.animate()
-                .alpha(1.0f)
-                .setDuration(duration)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                        view.visibility = View.VISIBLE
-                    }
-                })
     }
 
 }
